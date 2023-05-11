@@ -1,8 +1,10 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, prefer_const_declarations, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:school_flutter/models/lesson.dart';
 import 'package:school_flutter/services/todo_service.dart';
 import '../utils/snackbar_helper.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 
 class AddTodoPage extends StatefulWidget {
   final Map? todo;
@@ -13,6 +15,9 @@ class AddTodoPage extends StatefulWidget {
 }
 
 class _AddTodoPageState extends State<AddTodoPage> {
+  List<LessonModel> lessons = [];
+  late LessonModel? lessonSelected = null;
+
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   bool isEdit = false;
@@ -20,6 +25,7 @@ class _AddTodoPageState extends State<AddTodoPage> {
   @override
   void initState() {
     super.initState();
+    getLessonList();
     final todo = widget.todo;
     if (todo != null) {
       isEdit = true;
@@ -38,10 +44,30 @@ class _AddTodoPageState extends State<AddTodoPage> {
       body: ListView(
         padding: EdgeInsets.all(20),
         children: [
-          // TextField(
-          //   controller: titleController,
-          //   decoration: InputDecoration(hintText: 'Заголовок'),
-          // ),
+          DropdownSearch<LessonModel>(
+            popupProps: PopupProps.bottomSheet(
+              showSearchBox: true,
+              showSelectedItems: false,
+            ),
+            items: lessons,
+            itemAsString: (item) => item.name,
+            dropdownDecoratorProps: DropDownDecoratorProps(
+              dropdownSearchDecoration: InputDecoration(
+                labelText: "Предмет",
+                hintText: "Выберите предмет",
+              ),
+            ),
+            onChanged: (value) {
+              if (value != null) {
+                setState(() {
+                  lessonSelected = value;
+                  print(lessonSelected?.name);
+                  print(lessonSelected?.id);
+                });
+              }
+            },
+            selectedItem: lessonSelected,
+          ),
           TextField(
             controller: descriptionController,
             decoration: InputDecoration(hintText: 'Описание'),
@@ -96,6 +122,18 @@ class _AddTodoPageState extends State<AddTodoPage> {
       showSuccessMessage(context, message: 'Успешно добавлено');
     } else {
       showErrorMessage(context, message: 'Ошибка добавления');
+    }
+  }
+
+  Future<void> getLessonList() async {
+    final response = await TodoService.getLessonList();
+    if (response != null) {
+      setState(() {
+        lessons = response;
+      });
+      print(lessons);
+    } else {
+      showErrorMessage(context, message: 'Домашних заданий нет');
     }
   }
 

@@ -2,9 +2,11 @@
 
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:school_flutter/models/lesson.dart';
 
 //API методы здесь
 class TodoService {
+  //homework
   static Future<bool> deleteById(int id) async {
     final url = 'http://api.malkollm.ru/homeworks/$id';
     final uri = Uri.parse(url);
@@ -45,5 +47,20 @@ class TodoService {
     });
 
     return response.statusCode == 200;
+  }
+
+  //lessons
+  static Future<List<LessonModel>?> getLessonList() async {
+    final url = 'http://api.malkollm.ru/lessons';
+    final uri = Uri.parse(url);
+    final response = await http.get(uri);
+    if (response.statusCode == 200) {
+      List<dynamic> json = jsonDecode(response.body);
+      List<LessonModel> lessons = List<LessonModel>.from(json.map((model) => LessonModel.fromJson(model)));
+
+      return lessons;
+    } else {
+      return null;
+    }
   }
 }
