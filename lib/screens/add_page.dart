@@ -1,9 +1,8 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, prefer_const_declarations
-
-import 'dart:convert';
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, prefer_const_declarations, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:school_flutter/services/todo_service.dart';
+import '../utils/snackbar_helper.dart';
 
 class AddTodoPage extends StatefulWidget {
   final Map? todo;
@@ -73,68 +72,41 @@ class _AddTodoPageState extends State<AddTodoPage> {
     final id = todo['id'];
     final description = descriptionController.text;
     final body = {
-      'id': id,
-      'text': description,
-      'date': '2023-05-10T03:58:03.760Z',
-      'lessonId': 4,
-      'groupId': 5
-    };
-
-    final url = 'http://api.malkollm.ru/homeworks';
-    final uri = Uri.parse(url);
-    final response = await http.put(uri,
-        body: jsonEncode(body),
-        headers: {'Content-Type': 'application/json', 'accept': 'text/plain'});
-
-    if (response.statusCode == 200) {
-      descriptionController.text = '';
-      showSuccessMessage('Задача успешно изменена');
-    } else {
-      showErrorMessage('Ошибка изменения задачи');
-    }
-  }
-
-  Future<void> submitData() async {
-    //get the data from form
-    // final title = titleController.text;
-    final description = descriptionController.text;
-    final body = {
+      "id": id,
       "text": description,
       "date": "2023-05-10T03:58:03.760Z",
       "lessonId": 4,
       "groupId": 5
     };
+    final isSuccess = await TodoService.updateData(id, body);
 
-    //submit data to the server
-    final url = 'http://api.malkollm.ru/homeworks/addhomework';
-    final uri = Uri.parse(url);
-    final response = await http.post(uri, body: jsonEncode(body), headers: {
-      'Content-Type': 'application/json',
-      'accept': 'application/json'
-    });
-
-    //show success or fail message based on status
-    if (response.statusCode == 200) {
+    if (isSuccess) {
       descriptionController.text = '';
-      showSuccessMessage('Успешно добавлено');
+      showSuccessMessage(context, message: 'Задача успешно изменена');
     } else {
-      showErrorMessage('Ошибка добавления');
+      showErrorMessage(context, message: 'Ошибка изменения задачи');
     }
   }
 
-  void showSuccessMessage(String message) {
-    final snackBar = SnackBar(content: Text(message));
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  Future<void> submitData() async {
+    final isSuccess = await TodoService.addData(body);
+
+    if (isSuccess) {
+      descriptionController.text = '';
+      showSuccessMessage(context, message: 'Успешно добавлено');
+    } else {
+      showErrorMessage(context, message: 'Ошибка добавления');
+    }
   }
 
-  void showErrorMessage(String message) {
-    final snackBar = SnackBar(
-      content: Text(
-        message,
-        style: TextStyle(color: Colors.white),
-      ),
-      backgroundColor: Colors.red,
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  Map get body {
+    // final title = titleController.text;
+    final description = descriptionController.text;
+    return {
+      "text": description,
+      "date": "2023-05-10T03:58:03.760Z",
+      "lessonId": 4,
+      "groupId": 5
+    };
   }
 }

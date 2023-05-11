@@ -1,10 +1,10 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_declarations
-
-import 'dart:convert';
+// ignore_for_file: prefer_const_constructors, prefer_const_declarations, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
 import 'package:school_flutter/screens/add_page.dart';
-import 'package:http/http.dart' as http;
+import 'package:school_flutter/services/todo_service.dart';
+import '../utils/snackbar_helper.dart';
+import '../widget/todo_card.dart';
 
 class TodoListPage extends StatefulWidget {
   const TodoListPage({super.key});
@@ -33,40 +33,27 @@ class _TodoListPageState extends State<TodoListPage> {
         visible: isLoading,
         replacement: RefreshIndicator(
           onRefresh: getTodoList,
-          child: ListView.builder(
-            itemCount: items.length,
-            itemBuilder: (context, index) {
-              final item = items[index] as Map;
-              final id = item['id'].toString();
-              return ListTile(
-                leading: CircleAvatar(child: Text('${index + 1}')),
-                title: Text(item['lessonName']),
-                subtitle: Text(item['task']),
-                trailing: PopupMenuButton(
-                  onSelected: (value) {
-                    if (value == 'edit') {
-                      //edit
-                      navigateToEditPage(item);
-                    } else if (value == 'delete') {
-                      //delete
-                      deleteById(id);
-                    }
-                  },
-                  itemBuilder: (context) {
-                    return [
-                      PopupMenuItem(
-                        value: 'edit',
-                        child: Text('Редактировать'),
-                      ),
-                      PopupMenuItem(
-                        value: 'delete',
-                        child: Text('Удалить'),
-                      ),
-                    ];
-                  },
-                ),
-              );
-            },
+          child: Visibility(
+            visible: items.isNotEmpty,
+            replacement: Center(
+              child: Text(
+                'Нет домашних заданий',
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
+            ),
+            child: ListView.builder(
+              itemCount: items.length,
+              padding: EdgeInsets.all(8),
+              itemBuilder: (context, index) {
+                final item = items[index] as Map;
+                return TodoCard(
+                  index: index,
+                  item: item,
+                  deleteById: deleteById,
+                  navigateEdit: navigateToEditPage,                  
+                );
+              },
+            ),
           ),
         ),
         child: Center(
@@ -100,44 +87,30 @@ class _TodoListPageState extends State<TodoListPage> {
     getTodoList();
   }
 
-  Future<void> deleteById(String id) async {
-    final url = 'http://api.malkollm.ru/homeworks/$id';
-    final uri = Uri.parse(url);
-    final response = await http.delete(uri);
-    if (response.statusCode == 200) {
+  Future<void> deleteById(int id) async {
+    final isSuccess = await TodoService.deleteById(id);
+    if (isSuccess) {
       final filtered = items.where((element) => element['id'] != id).toList();
       setState(() {
         items = filtered;
       });
       getTodoList();
     } else {
-      showErrorMessage('Ошибка удаления');
+      showErrorMessage(context, message: 'Ошибка удаления');
     }
   }
 
   Future<void> getTodoList() async {
-    final url = 'http://api.malkollm.ru/homeworks/GetHomeworkByGroup/5';
-    final uri = Uri.parse(url);
-    final response = await http.get(uri);
-    if (response.statusCode == 200) {
-      final json = jsonDecode(response.body);
+    final response = await TodoService.getTodoList();
+    if (response != null) {
       setState(() {
-        items = json;
+        items = response;
       });
+    } else {
+      showErrorMessage(context, message: 'Домашних заданий нет');
     }
     setState(() {
       isLoading = false;
     });
-  }
-
-  void showErrorMessage(String message) {
-    final snackBar = SnackBar(
-      content: Text(
-        message,
-        style: TextStyle(color: Colors.white),
-      ),
-      backgroundColor: Colors.red,
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }
