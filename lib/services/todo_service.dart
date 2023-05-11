@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:school_flutter/models/group.dart';
 import 'package:school_flutter/models/lesson.dart';
 
 //API методы здесь
@@ -59,6 +60,21 @@ class TodoService {
       List<LessonModel> lessons = List<LessonModel>.from(json.map((model) => LessonModel.fromJson(model)));
 
       return lessons;
+    } else {
+      return null;
+    }
+  }
+
+  //groups
+  static Future<List<GroupModel>?> getGroupList() async {
+    final url = 'http://api.malkollm.ru/groups';
+    final uri = Uri.parse(url);
+    final response = await http.get(uri);
+    if (response.statusCode == 200) {
+      List<dynamic> json = jsonDecode(response.body);
+      List<GroupModel> groups = List<GroupModel>.from(json.map((model) => GroupModel.fromJson(model)));
+
+      return groups;
     } else {
       return null;
     }

@@ -2,7 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:school_flutter/models/lesson.dart';
+import 'package:school_flutter/screens/todo_list.dart';
 import 'package:school_flutter/services/todo_service.dart';
+import '../models/group.dart';
 import '../utils/snackbar_helper.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 
@@ -17,6 +19,8 @@ class AddTodoPage extends StatefulWidget {
 class _AddTodoPageState extends State<AddTodoPage> {
   List<LessonModel> lessons = [];
   late LessonModel? lessonSelected = null;
+  List<GroupModel> groups = [];
+  late GroupModel? groupSelected = null;
 
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
@@ -26,6 +30,7 @@ class _AddTodoPageState extends State<AddTodoPage> {
   void initState() {
     super.initState();
     getLessonList();
+    getGroupList();
     final todo = widget.todo;
     if (todo != null) {
       isEdit = true;
@@ -67,6 +72,30 @@ class _AddTodoPageState extends State<AddTodoPage> {
               }
             },
             selectedItem: lessonSelected,
+          ),
+          DropdownSearch<GroupModel>(
+            popupProps: PopupProps.bottomSheet(
+              showSearchBox: true,
+              showSelectedItems: false,
+            ),
+            items: groups,
+            itemAsString: (item) => '${item.number} класс',
+            dropdownDecoratorProps: DropDownDecoratorProps(
+              dropdownSearchDecoration: InputDecoration(
+                labelText: "Класс",
+                hintText: "Выберите класс",
+              ),
+            ),
+            onChanged: (value) {
+              if (value != null) {
+                setState(() {
+                  groupSelected = value;
+                  print(groupSelected?.number);
+                  print(groupSelected?.id);
+                });
+              }
+            },
+            selectedItem: groupSelected,
           ),
           TextField(
             controller: descriptionController,
@@ -118,7 +147,7 @@ class _AddTodoPageState extends State<AddTodoPage> {
     final isSuccess = await TodoService.addData(body);
 
     if (isSuccess) {
-      descriptionController.text = '';
+      navigateToListToDo();
       showSuccessMessage(context, message: 'Успешно добавлено');
     } else {
       showErrorMessage(context, message: 'Ошибка добавления');
@@ -137,14 +166,33 @@ class _AddTodoPageState extends State<AddTodoPage> {
     }
   }
 
+  Future<void> getGroupList() async {
+    final response = await TodoService.getGroupList();
+    if (response != null) {
+      setState(() {
+        groups = response;
+      });
+      print(groups);
+    } else {
+      showErrorMessage(context, message: 'Домашних заданий нет');
+    }
+  }
+
+   Future<void> navigateToListToDo() async {
+    final route = MaterialPageRoute(
+      builder: (context) => TodoListPage(),
+    );
+    await Navigator.push(context, route);
+  }
+
   Map get body {
     // final title = titleController.text;
     final description = descriptionController.text;
     return {
       "text": description,
       "date": "2023-05-10T03:58:03.760Z",
-      "lessonId": 4,
-      "groupId": 5
+      "lessonId": lessonSelected?.id,
+      "groupId": groupSelected?.id
     };
   }
 }
