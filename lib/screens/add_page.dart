@@ -22,7 +22,6 @@ class _AddTodoPageState extends State<AddTodoPage> {
   List<GroupModel> groups = [];
   late GroupModel? groupSelected = null;
 
-  TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   bool isEdit = false;
 
@@ -33,6 +32,7 @@ class _AddTodoPageState extends State<AddTodoPage> {
     getGroupList();
     final todo = widget.todo;
     if (todo != null) {
+      print(todo);
       isEdit = true;
       descriptionController.text = todo['task'];
     }
@@ -66,8 +66,6 @@ class _AddTodoPageState extends State<AddTodoPage> {
               if (value != null) {
                 setState(() {
                   lessonSelected = value;
-                  print(lessonSelected?.name);
-                  print(lessonSelected?.id);
                 });
               }
             },
@@ -90,8 +88,6 @@ class _AddTodoPageState extends State<AddTodoPage> {
               if (value != null) {
                 setState(() {
                   groupSelected = value;
-                  print(groupSelected?.number);
-                  print(groupSelected?.id);
                 });
               }
             },
@@ -130,13 +126,13 @@ class _AddTodoPageState extends State<AddTodoPage> {
       "id": id,
       "text": description,
       "date": "2023-05-10T03:58:03.760Z",
-      "lessonId": 4,
-      "groupId": 5
+      "lessonId": lessonSelected?.id,
+      "groupId": groupSelected?.id
     };
     final isSuccess = await TodoService.updateData(id, body);
 
     if (isSuccess) {
-      descriptionController.text = '';
+      navigateToListToDo();
       showSuccessMessage(context, message: 'Задача успешно изменена');
     } else {
       showErrorMessage(context, message: 'Ошибка изменения задачи');
@@ -178,7 +174,7 @@ class _AddTodoPageState extends State<AddTodoPage> {
     }
   }
 
-   Future<void> navigateToListToDo() async {
+  Future<void> navigateToListToDo() async {
     final route = MaterialPageRoute(
       builder: (context) => TodoListPage(),
     );

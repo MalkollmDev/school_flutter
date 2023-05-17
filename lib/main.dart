@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:school_flutter/screens/schedule_list.dart';
 import 'package:school_flutter/screens/todo_list.dart';
 
 void main() {
@@ -13,7 +14,7 @@ class MyApp extends StatelessWidget {
     return  MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData.dark(),
-      home: const TodoListPage(),
+      home: const ScheduleListPage(),
     );
   }
 }

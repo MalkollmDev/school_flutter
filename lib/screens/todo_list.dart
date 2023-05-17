@@ -27,7 +27,7 @@ class _TodoListPageState extends State<TodoListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Академия АБВ'),
+        title: Text('Домашние задания'),
       ),
       body: Visibility(
         visible: isLoading,
