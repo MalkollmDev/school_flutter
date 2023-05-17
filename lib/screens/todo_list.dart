@@ -1,13 +1,15 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_declarations, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:school_flutter/models/user.dart';
 import 'package:school_flutter/screens/add_page.dart';
 import 'package:school_flutter/services/todo_service.dart';
 import '../utils/snackbar_helper.dart';
 import '../widget/todo_card.dart';
 
 class TodoListPage extends StatefulWidget {
-  const TodoListPage({super.key});
+  final UserModel? user;
+  const TodoListPage({super.key, this.user});
 
   @override
   State<TodoListPage> createState() => _TodoListPageState();
@@ -20,6 +22,12 @@ class _TodoListPageState extends State<TodoListPage> {
   @override
   void initState() {
     super.initState();
+
+    final user = widget.user;
+    if(user != null) {
+      print(user.middleName);
+    }
+
     getTodoList();
   }
 

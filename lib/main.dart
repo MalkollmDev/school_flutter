@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:school_flutter/screens/login_page.dart';
-import 'package:school_flutter/screens/schedule_list.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,7 +13,7 @@ class MyApp extends StatelessWidget {
     return  MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData.dark(),
-      home: LoginPage(),
+      home: const LoginPage(),
     );
   }
 }

@@ -1,13 +1,16 @@
 // ignore_for_file: prefer_const_constructors, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:school_flutter/models/user.dart';
 import 'package:school_flutter/services/schedule_service.dart';
 
 import '../utils/snackbar_helper.dart';
 import '../widget/schedule_card.dart';
 
 class ScheduleListPage extends StatefulWidget {
-  const ScheduleListPage({super.key});
+  final UserModel? user;
+
+  const ScheduleListPage({super.key, this.user});
 
   @override
   State<ScheduleListPage> createState() => _ScheduleListPageState();
@@ -19,7 +22,11 @@ class _ScheduleListPageState extends State<ScheduleListPage> {
   @override
   void initState() {
     super.initState();
-    
+
+    final user = widget.user;
+    if(user != null) {
+      print(user.lastName);
+    }
     getScheduleList();
   }
 
