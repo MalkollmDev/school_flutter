@@ -30,20 +30,13 @@ class ScheduleCard extends StatelessWidget {
             if (value == 'edit') {
               //edit
               // navigateEdit(item);
-            } else if (value == 'delete') {
-              //delete
-              // deleteById(id);
             }
           },
           itemBuilder: (context) {
             return [
               PopupMenuItem(
                 value: 'edit',
-                child: Text('Редактировать'),
-              ),
-              PopupMenuItem(
-                value: 'delete',
-                child: Text('Удалить'),
+                child: Text('Подробнее'),
               ),
             ];
           },

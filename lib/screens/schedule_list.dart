@@ -36,7 +36,7 @@ class _ScheduleListPageState extends State<ScheduleListPage> {
                 final item = items[index] as Map;
                 return ScheduleCard(
                   index: index,
-                  item: item                
+                  item: item,             
                 );
               },
             ),
@@ -55,5 +55,18 @@ class _ScheduleListPageState extends State<ScheduleListPage> {
     // setState(() {
     //   isLoading = false;
     // });
+  }
+
+  Future<void> deleteById(int id) async {
+    final isSuccess = await ScheduleService.deleteById(id);
+    if (isSuccess) {
+      final filtered = items.where((element) => element['id'] != id).toList();
+      setState(() {
+        items = filtered;
+      });
+      getScheduleList();
+    } else {
+      showErrorMessage(context, message: 'Ошибка удаления');
+    }
   }
 }

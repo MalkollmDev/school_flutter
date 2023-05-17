@@ -15,4 +15,12 @@ class ScheduleService {
       return null;
     }
   }
+
+  static Future<bool> deleteById(int id) async {
+    final url = 'http://api.malkollm.ru/lessongroups/$id';
+    final uri = Uri.parse(url);
+    final response = await http.delete(uri);
+
+    return response.statusCode == 200;
+  }
 }
