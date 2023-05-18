@@ -2,6 +2,8 @@
 
 import 'package:flutter/material.dart';
 
+import '../utils/util.dart';
+
 class HomeworkCard extends StatelessWidget {
   final int index;
   final Map item;
@@ -28,11 +30,5 @@ class HomeworkCard extends StatelessWidget {
           },
       ),
     );
-  }
-
-  String getDate(String date) {
-    const String timestamp = 'T00:00:00';
-
-    return date.replaceFirst(timestamp, '');
   }
 }

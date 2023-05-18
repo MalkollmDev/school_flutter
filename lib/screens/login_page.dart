@@ -17,23 +17,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  List<UserModel> user = [];
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
-
-  Widget _buildImageBoxes() {
-    return Column(
-      children: <Widget>[
-        Expanded(
-          child: Image.network("https://picsum.photos/500/500/?random"),
-        ),
-        Container(
-          padding: EdgeInsets.all(10),
-          child: Text("Text"),
-        )
-      ],
-    );
-  }
 
   @override
   Widget build(BuildContext context) {

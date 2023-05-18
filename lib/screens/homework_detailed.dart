@@ -1,4 +1,8 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
+
+import '../utils/util.dart';
 
 class HomeworkDetailedPage extends StatefulWidget {
   final Map? homework;
@@ -10,21 +14,71 @@ class HomeworkDetailedPage extends StatefulWidget {
 }
 
 class _HomeworkDetailedPageState extends State<HomeworkDetailedPage> {
-   @override
+  late final Map item;
+
+  @override
   void initState() {
     super.initState();
 
     final homework = widget.homework;
     if (homework != null) {
-      print(homework);
+      setState(() {
+        item = homework;
+      });
     }
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Домашние '),
+        title: Text('${item['lessonName']}'),
+      ),
+      body: SafeArea(
+        child: Center(
+          child: Column(
+            children: [
+              SizedBox(height: 50),
+              Text(
+                'До какого числа сделать:',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 22,
+                ),
+              ),
+              SizedBox(height: 25),
+              Text(
+                getDate(item['date']),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 25,
+                ),
+              ),
+              SizedBox(height: 25),
+              Divider(
+                color: Colors.white,
+              ),
+              SizedBox(height: 25),
+              Text(
+                'Что сделать:',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 22,
+                ),
+              ),
+              SizedBox(height: 25),
+              Text(
+                item['task'],
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 25,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
