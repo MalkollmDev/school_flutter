@@ -3,8 +3,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class ScheduleService {
-  static Future<List?> getScheduleList() async {
-    final url = 'http://api.malkollm.ru/lessons/GetGroupSchedule/4';
+  static Future<List?> getScheduleList(int groupId) async {
+    final url = 'http://api.malkollm.ru/lessons/GetGroupSchedule/${groupId}';
     final uri = Uri.parse(url);
     final response = await http.get(uri);
     if (response.statusCode == 200) {

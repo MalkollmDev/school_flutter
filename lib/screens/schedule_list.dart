@@ -2,8 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:school_flutter/models/user.dart';
+import 'package:school_flutter/screens/homework_page.dart';
 import 'package:school_flutter/services/schedule_service.dart';
-
 import '../utils/snackbar_helper.dart';
 import '../widget/schedule_card.dart';
 
@@ -18,16 +18,23 @@ class ScheduleListPage extends StatefulWidget {
 
 class _ScheduleListPageState extends State<ScheduleListPage> {
   List items = [];
+  late final UserModel? user;
 
   @override
   void initState() {
     super.initState();
 
-    final user = widget.user;
-    if(user != null) {
-      print(user.lastName);
+    user = widget.user;
+
+    if (user != null) {
+      print(user!.groupId);
+
+      // setState(() {
+      //   user = filtered;
+      // });
+
+      getScheduleList(user!.groupId);
     }
-    getScheduleList();
   }
 
   @override
@@ -37,43 +44,37 @@ class _ScheduleListPageState extends State<ScheduleListPage> {
         title: Text('Расписание'),
       ),
       body: ListView.builder(
-              itemCount: items.length,
-              padding: EdgeInsets.all(8),
-              itemBuilder: (context, index) {
-                final item = items[index] as Map;
-                return ScheduleCard(
-                  index: index,
-                  item: item,             
-                );
-              },
-            ),
+        itemCount: items.length,
+        padding: EdgeInsets.all(8),
+        itemBuilder: (context, index) {
+          final item = items[index] as Map;
+          return ScheduleCard(
+            index: index,
+            item: item,
+          );
+        },
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+          onPressed: () => navigateToUsersHomeworkPage(user!),
+          label: Text('Домашние')),
     );
   }
 
-  Future<void> getScheduleList() async {
-    final response = await ScheduleService.getScheduleList();
+  Future<void> getScheduleList(int groupId) async {
+    final response = await ScheduleService.getScheduleList(groupId);
     if (response != null) {
       setState(() {
         items = response;
       });
     } else {
-      showErrorMessage(context, message: 'Домашних заданий нет');
+      showErrorMessage(context, message: 'Пока расписания занятий нет');
     }
-    // setState(() {
-    //   isLoading = false;
-    // });
   }
 
-  Future<void> deleteById(int id) async {
-    final isSuccess = await ScheduleService.deleteById(id);
-    if (isSuccess) {
-      final filtered = items.where((element) => element['id'] != id).toList();
-      setState(() {
-        items = filtered;
-      });
-      getScheduleList();
-    } else {
-      showErrorMessage(context, message: 'Ошибка удаления');
-    }
+  Future<void> navigateToUsersHomeworkPage(UserModel user) async {
+    final route = MaterialPageRoute(
+      builder: (context) => HomeworkPage(user : user),
+    );
+    await Navigator.push(context, route);
   }
 }

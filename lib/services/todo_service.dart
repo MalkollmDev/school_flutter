@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_declarations
+// ignore_for_file: prefer_const_declarations, unnecessary_brace_in_string_interps
 
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -18,6 +18,19 @@ class TodoService {
 
   static Future<List?> getTodoList() async {
     final url = 'http://api.malkollm.ru/homeworks/GetHomeworkByGroup/5';
+    final uri = Uri.parse(url);
+    final response = await http.get(uri);
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body);
+
+      return json;
+    } else {
+      return null;
+    }
+  }
+
+  static Future<List?> getHomeworkListById(int groupId) async {
+    final url = 'http://api.malkollm.ru/homeworks/GetHomeworkByGroup/${groupId}';
     final uri = Uri.parse(url);
     final response = await http.get(uri);
     if (response.statusCode == 200) {

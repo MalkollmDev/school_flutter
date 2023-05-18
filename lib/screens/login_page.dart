@@ -21,7 +21,7 @@ class _LoginPageState extends State<LoginPage> {
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
 
-Widget _buildImageBoxes() {
+  Widget _buildImageBoxes() {
     return Column(
       children: <Widget>[
         Expanded(
@@ -38,6 +38,7 @@ Widget _buildImageBoxes() {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Center(
           child: Column(
