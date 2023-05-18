@@ -21,13 +21,19 @@ class HomeworkCard extends StatelessWidget {
     final id = item['id'];
     return Card(
       child: ListTile(
-        leading: CircleAvatar(child: Text('${index + 1}')),
+        leading: CircleAvatar(
+          backgroundColor:
+              item['isComplete'] 
+              ? Colors.green[200] 
+              : Colors.red[200],
+          child: Text('${index + 1}'),
+        ),
         title: Text(item['lessonName']),
         subtitle: Text('Выполнить до: ${getDate(item['date'])}'),
         trailing: Icon(Icons.keyboard_arrow_right),
         onTap: () {
-            detailPage(item);
-          },
+          detailPage(item);
+        },
       ),
     );
   }

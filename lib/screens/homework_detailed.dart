@@ -76,6 +76,28 @@ class _HomeworkDetailedPageState extends State<HomeworkDetailedPage> {
                   fontSize: 25,
                 ),
               ),
+              SizedBox(height: 25),
+              Divider(
+                color: Colors.white,
+              ),
+              SizedBox(height: 25),
+              IconButton(
+                icon:
+                    item['isComplete'] ? Icon(Icons.check) : Icon(Icons.cancel),
+                iconSize: 50,
+                color: item['isComplete'] ? Colors.green[200] : Colors.red[200],
+                tooltip: 'Домашняя работа зачтена!',
+                onPressed: () {},
+              ),
+              Text(
+                item['isComplete']
+                    ? 'Домашняя работа зачтена!'
+                    : 'Домашняя работа не зачтена!',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                ),
+              )
             ],
           ),
         ),
