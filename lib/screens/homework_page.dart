@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:school_flutter/models/user.dart';
+import 'package:school_flutter/screens/homework_detailed.dart';
 import 'package:school_flutter/widget/homework_card.dart';
 
 import '../services/todo_service.dart';
@@ -44,6 +45,7 @@ class _HomeworkPageState extends State<HomeworkPage> {
           return HomeworkCard(
             index: index,
             item: item,
+            detailPage: navigateToDetailPage,
           );
         },
       ),
@@ -59,5 +61,12 @@ class _HomeworkPageState extends State<HomeworkPage> {
     } else {
       showErrorMessage(context, message: 'Домашних заданий нет');
     }
+  }
+
+  Future<void> navigateToDetailPage(Map item) async {
+    final route = MaterialPageRoute(
+      builder: (context) => HomeworkDetailedPage(homework: item),
+    );
+    await Navigator.push(context, route);
   }
 }

@@ -5,10 +5,13 @@ import 'package:flutter/material.dart';
 class HomeworkCard extends StatelessWidget {
   final int index;
   final Map item;
+  final Function(Map) detailPage;
+
   const HomeworkCard({
     super.key,
     required this.index,
     required this.item,
+    required this.detailPage,
   });
 
   @override
@@ -19,14 +22,17 @@ class HomeworkCard extends StatelessWidget {
         leading: CircleAvatar(child: Text('${index + 1}')),
         title: Text(item['lessonName']),
         subtitle: Text('Выполнить до: ${getDate(item['date'])}'),
-        trailing:Icon(Icons.keyboard_arrow_right),
+        trailing: Icon(Icons.keyboard_arrow_right),
+        onTap: () {
+            detailPage(item);
+          },
       ),
     );
   }
 
-  String getDate(String item){
+  String getDate(String date) {
     const String timestamp = 'T00:00:00';
 
-    return item.replaceFirst(timestamp, '');
+    return date.replaceFirst(timestamp, '');
   }
 }
