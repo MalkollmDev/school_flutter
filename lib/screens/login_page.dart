@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, avoid_web_libraries_in_flutter, use_build_context_synchronously
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, avoid_web_libraries_in_flutter, use_build_context_synchronously, sort_child_properties_last
 
 import 'package:flutter/material.dart';
 import 'package:school_flutter/components/custom_button.dart';
@@ -72,9 +72,18 @@ class _LoginPageState extends State<LoginPage> {
               ),
               SizedBox(height: 50),
               //button
-              CustomButton(
-                onTap: signUserIn,
-              )
+               ElevatedButton(
+                onPressed: signUserIn,
+                child: Text('Войти'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.purple,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+                ),
+              ),
+              // CustomButton(
+              //   onTap: signUserIn,
+              // )
             ],
           ),
         ),
